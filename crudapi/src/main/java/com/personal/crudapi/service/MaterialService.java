@@ -25,8 +25,18 @@ public class MaterialService {
         return repository.save(material);
     }
 
+    public void deletaMaterial(MaterialDTO materialDTO){
+        Material material = new Material();
+        material.setCodigoMaterial(materialDTO.getCodigoMaterial());
+        repository.delete(material);
+    }
 
+    public Material atualizaMaterial(MaterialDTO materialDTO){
+        Material material = new Material();
+        material.setCodigoMaterial(materialDTO.getCodigoMaterial());
 
+        return repository.save(material);
+    }
     public List<Material> listaTodosOsMateriais(){
         return repository.findAll();
     }
