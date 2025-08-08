@@ -7,12 +7,12 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class EstoqueSetor {
+public class EstoqueCentroCusto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private DispositivoIoT codigoMaterial;
-    private SetorFabrica codigoSetor;
+    private Material codigoMaterial;
+    private CentroCusto codigoCentroCusto;
     private Integer quantidade;
 }

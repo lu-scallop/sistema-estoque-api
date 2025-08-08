@@ -7,15 +7,15 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class SetorFabrica {
+public class CentroCusto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(unique = true, nullable = false)
-    private String codigoSetor;
+    private String codigoCentroCusto;
     private String nome;
-    private EstoqueSetor deposito;
+    private EstoqueCentroCusto deposito;
 
 
 }

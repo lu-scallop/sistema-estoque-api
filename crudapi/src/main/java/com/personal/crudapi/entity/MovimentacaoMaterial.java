@@ -7,14 +7,14 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class MovimentacaoDispositivo {
+public class MovimentacaoMaterial {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private DispositivoIoT codigoMaterial;
-    private SetorFabrica setorOrigem;
-    private SetorFabrica setorDestino;
+    private Material codigoMaterial;
+    private CentroCusto centroOrigem;
+    private CentroCusto centroDestino;
     private Integer quantidadeMovimentada;
     private String observacao;
 }
