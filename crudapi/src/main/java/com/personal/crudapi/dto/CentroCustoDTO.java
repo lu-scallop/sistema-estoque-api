@@ -1,14 +1,12 @@
 package com.personal.crudapi.dto;
 
 import com.personal.crudapi.entity.EstoqueCentroCusto;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class CentroCustoDTO {
+    private Long id;
     private String codigoCentroCusto;
     private String nome;
     private EstoqueCentroCusto deposito;
-
 }

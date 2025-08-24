@@ -1,11 +1,10 @@
 package com.personal.crudapi.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class MaterialDTO {
+    private Long id;
     private String codigoMaterial;
     private String nome;
     private String tipo;

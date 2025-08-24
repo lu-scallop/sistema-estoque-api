@@ -1,12 +1,10 @@
 package com.personal.crudapi.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 @Entity
-@Getter
-@Setter
+@Data
 public class CentroCusto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,7 +13,4 @@ public class CentroCusto {
     @Column(unique = true, nullable = false)
     private String codigoCentroCusto;
     private String nome;
-    private EstoqueCentroCusto deposito;
-
-
 }

@@ -1,12 +1,12 @@
 package com.personal.crudapi.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Getter
-@Setter
+@Data
 public class Material {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,7 +14,6 @@ public class Material {
 
     @Column(unique = true, nullable = false)
     private String codigoMaterial;
-
     private String nome;
     private String tipo;
 }

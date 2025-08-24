@@ -3,6 +3,8 @@ package com.personal.crudapi.service;
 import com.personal.crudapi.dto.MaterialDTO;
 import com.personal.crudapi.entity.Material;
 import com.personal.crudapi.repository.MaterialRepository;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,9 +17,10 @@ public class MaterialService {
     @Autowired
     private MaterialRepository repository;
 
-
-    public Material adicionaNovoMaterial(MaterialDTO materialDTO){
-        Material material = new Material();
+    @Transactional
+    public Material adicionaOuAtualizaMaterial(MaterialDTO materialDTO){
+        Material material = repository.findByCodigoMaterial(materialDTO.getCodigoMaterial())
+                        .orElseGet(Material::new);
         material.setCodigoMaterial(materialDTO.getCodigoMaterial());
         material.setNome(materialDTO.getNome());
         material.setTipo(materialDTO.getTipo());
@@ -25,25 +28,21 @@ public class MaterialService {
         return repository.save(material);
     }
 
-    public void deletaMaterial(MaterialDTO materialDTO){
-        Material material = new Material();
-        material.setCodigoMaterial(materialDTO.getCodigoMaterial());
-        repository.delete(material);
+    @Transactional
+    public void deletaMaterial(String codigo){
+        repository.findByCodigoMaterial(codigo)
+                .ifPresent(repository::delete);
     }
 
-    public Material atualizaMaterial(MaterialDTO materialDTO){
-        Material material = new Material();
-        material.setCodigoMaterial(materialDTO.getCodigoMaterial());
-
-        return repository.save(material);
-    }
     public List<Material> listaTodosOsMateriais(){
         return repository.findAll();
     }
 
+    public Material buscaPorCodigo(String codigo){
+        return repository.findByCodigoMaterial(codigo)
+                .orElseThrow(() -> new IllegalArgumentException("Material não encontrado: "+codigo));
 
-
-
+    }
 
 }
 

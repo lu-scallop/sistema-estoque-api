@@ -1,18 +1,20 @@
 package com.personal.crudapi.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 @Entity
-@Getter
-@Setter
+@Data
 public class EstoqueCentroCusto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Material codigoMaterial;
-    private CentroCusto codigoCentroCusto;
-    private Integer quantidade;
+    @ManyToOne(optional = false)
+    private CentroCusto centroCusto;
+
+    @ManyToOne(optional = false)
+    private Material material;
+
+    private Long saldo = 0L;
 }
