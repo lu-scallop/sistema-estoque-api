@@ -18,7 +18,6 @@ public interface ReservaEstoqueRepository extends JpaRepository<ReservaEstoque, 
             "WHERE r.material = :material " +
             "AND r.origem = :origem " +
             "AND r.status IN :status")
-
     Long reservadoEmAberto (@Param("material") Material material,
                             @Param("origem")CentroCusto origem,
                             @Param("statuses")Collection<StatusReserva> statuses);

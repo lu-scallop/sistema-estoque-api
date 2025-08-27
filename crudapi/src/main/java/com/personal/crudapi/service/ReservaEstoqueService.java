@@ -45,11 +45,17 @@ public class ReservaEstoqueService {
     }
 
     @Transactional
-    public Long salvoDisponivelParaReserva(Material material, CentroCusto origem)
-    {
-        Long saldo = estoqueService.adicionaOuObtem(material, origem).getSaldo();
-        Long reservado = repository.reservadoEmAberto(material, origem, List.of(StatusReserva.APROVADA, StatusReserva.ABERTA));
-        return saldo - reservado;
+    public ReservaEstoque cancelaReservaAberta(Long id){
+        ReservaEstoque reserva = repository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Reserva não encontrada: id=" + id));
+
+        if (reserva.getStatus() != StatusReserva.ABERTA ){
+            throw new IllegalArgumentException("Só é possível cancelar reservas abertas.");
+        }
+
+        reserva.setStatus(StatusReserva.CANCELADA);
+
+        return repository.save(reserva);
     }
 
 
