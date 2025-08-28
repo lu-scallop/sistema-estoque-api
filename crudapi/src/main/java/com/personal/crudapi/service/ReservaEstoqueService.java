@@ -3,14 +3,18 @@ package com.personal.crudapi.service;
 import com.personal.crudapi.dto.ReservaEstoqueDTO;
 import com.personal.crudapi.entity.CentroCusto;
 import com.personal.crudapi.entity.Material;
+import com.personal.crudapi.entity.MovimentacaoMaterial;
 import com.personal.crudapi.entity.ReservaEstoque;
 import com.personal.crudapi.enums.StatusReserva;
+import com.personal.crudapi.enums.TipoMovimentacao;
+import com.personal.crudapi.repository.MovimentacaoMaterialRepository;
 import com.personal.crudapi.repository.ReservaEstoqueRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -20,9 +24,11 @@ public class ReservaEstoqueService {
     private ReservaEstoqueRepository repository;
     @Autowired
     private EstoqueCentroCustoService estoqueService;
+    @Autowired
+    private MovimentacaoMaterialRepository movimentacaoMaterialRepository;
 
     @Transactional
-    public ReservaEstoque adicionaReserva(ReservaEstoqueDTO dto){
+    public ReservaEstoque criaReserva(ReservaEstoqueDTO dto){
         ReservaEstoque reserva = new ReservaEstoque();
 
         if (dto.getMaterial() == null)
@@ -44,10 +50,54 @@ public class ReservaEstoqueService {
 
     }
 
+    public ReservaEstoque atendePedidoDeReserva(Long id, Long quantidadeParaAtender){
+        if (quantidadeParaAtender == null || quantidadeParaAtender <= 0){
+            throw new IllegalArgumentException("Quantidade para atender solicitação é inválida");
+        }
+        ReservaEstoque reserva = repository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Pedido de reserva não encontrado: id = " + id));
+        if (reserva.getStatus() != StatusReserva.ABERTA){
+            throw new IllegalArgumentException("A reserva já foi atendida totalmente");
+        }
+
+        long quantidadeRestante = reserva.getQuantidadeSolicitada() - reserva.getQuantidadeAtendida();
+        if (quantidadeParaAtender > quantidadeRestante ){
+            throw new IllegalArgumentException("A quantidade de envio não deve ser maior que a quantidade solictada");
+
+        }
+
+        Long saldoNoCentroOrigem = estoqueService.adicionaOuObtem(reserva.getMaterial(), reserva.getCentroCustoOrigem()).getSaldo();
+        if (saldoNoCentroOrigem < quantidadeParaAtender) {
+            throw new IllegalArgumentException("Não há saldo suficiente para atender a reserva.");
+        }
+
+        MovimentacaoMaterial movMaterial = new MovimentacaoMaterial();
+
+        movMaterial.setMaterial(reserva.getMaterial());
+        movMaterial.setCentroOrigem(reserva.getCentroCustoOrigem());
+        movMaterial.setCentroDestino(reserva.getCentroCustoDestino());
+        movMaterial.setQuantidadeMovimentada(quantidadeParaAtender);
+        movMaterial.setTipo(TipoMovimentacao.TRANSFERENCIA);
+        movMaterial.setObservacao("Atendimento da reserva: " + reserva.getId());
+
+        movimentacaoMaterialRepository.save(movMaterial);
+
+        reserva.setQuantidadeAtendida(reserva.getQuantidadeAtendida() + quantidadeParaAtender);
+        if (reserva.getQuantidadeAtendida().equals(reserva.getQuantidadeSolicitada()))
+        {
+            reserva.setStatus(StatusReserva.ATENDIDA);
+            reserva.setDataAtendimento(new Date());
+        }
+
+        return repository.save(reserva);
+
+
+    }
+
     @Transactional
     public ReservaEstoque cancelaReservaAberta(Long id){
         ReservaEstoque reserva = repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Reserva não encontrada: id=" + id));
+                .orElseThrow(() -> new IllegalArgumentException("Reserva não encontrada: id = " + id));
 
         if (reserva.getStatus() != StatusReserva.ABERTA ){
             throw new IllegalArgumentException("Só é possível cancelar reservas abertas.");
