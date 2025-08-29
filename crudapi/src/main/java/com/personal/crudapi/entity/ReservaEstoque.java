@@ -22,7 +22,6 @@ public class ReservaEstoque {
     private CentroCusto centroCustoDestino;
 
     private Long quantidadeSolicitada;
-    private Long quantidadeAprovada = 0L;
     private Long quantidadeAtendida = 0L;
 
     @Enumerated(EnumType.STRING)
