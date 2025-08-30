@@ -50,6 +50,7 @@ public class ReservaEstoqueService {
 
     }
 
+    @Transactional
     public ReservaEstoque atendePedidoDeReserva(Long id, Long quantidadeParaAtender){
         if (quantidadeParaAtender == null || quantidadeParaAtender <= 0){
             throw new IllegalArgumentException("Quantidade para atender solicitação é inválida");

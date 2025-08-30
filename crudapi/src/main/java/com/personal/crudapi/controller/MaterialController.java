@@ -22,6 +22,12 @@ public class MaterialController {
         return ResponseEntity.ok(service.adicionaOuAtualizaMaterial(dto));
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable Long id){
+        service.deletaMaterial(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping
     public List<Material> listar(){ return service.listaTodosOsMateriais(); }
 }

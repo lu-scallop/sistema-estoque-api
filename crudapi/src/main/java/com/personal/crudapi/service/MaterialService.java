@@ -29,9 +29,12 @@ public class MaterialService {
     }
 
     @Transactional
-    public void deletaMaterial(String codigo){
-        repository.findByCodigoMaterial(codigo)
-                .ifPresent(repository::delete);
+    public void deletaMaterial(Long id){
+        if(!repository.existsById(id)){
+            throw new IllegalArgumentException("Material não encontrado: " + id);
+        }
+
+        repository.deleteById(id);
     }
 
     public List<Material> listaTodosOsMateriais(){
