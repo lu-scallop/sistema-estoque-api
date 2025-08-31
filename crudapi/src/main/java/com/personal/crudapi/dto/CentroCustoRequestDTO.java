@@ -1,11 +1,12 @@
 package com.personal.crudapi.dto;
 
-import com.personal.crudapi.entity.EstoqueCentroCusto;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class CentroCustoDTO {
-    private Long id;
+public class CentroCustoRequestDTO {
+    @NotBlank
     private String codigoCentroCusto;
+    @NotBlank
     private String nome;
 }

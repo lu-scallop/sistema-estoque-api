@@ -1,21 +1,23 @@
 package com.personal.crudapi.dto;
 
-import com.personal.crudapi.entity.CentroCusto;
-import com.personal.crudapi.entity.Material;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import com.personal.crudapi.enums.StatusReserva;
 import lombok.Data;
 
+import java.time.Instant;
 import java.util.Date;
 
 @Data
 public class ReservaEstoqueDTO {
-    private Material material;
-    private CentroCusto centroCustoOrigem;
-    private CentroCusto centroCustoDestino;
-    private Long quantidade;
-    private Date criadaEm;
-    private Date dataAprovacao;
-    private Date dataAtendimento;
+    private Long id;
+    private Long materialId;
+    private String materialCodigo;
+    private Long centroCustoOrigemId;
+    private String centroOrigemCodigo;
+    private Long centroCustoDestinoId;
+    private String centroCustoDestinoCodigo;
+    private Long quantidadeSolicitada;
+    private Long quantidadeAtendida;
+    private StatusReserva status;
+    private Instant dataAprovacao;
+    private Instant dataAtendimento;
 }
