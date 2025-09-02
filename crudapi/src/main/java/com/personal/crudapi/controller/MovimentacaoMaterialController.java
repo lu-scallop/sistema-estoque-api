@@ -1,6 +1,7 @@
 package com.personal.crudapi.controller;
 
 import com.personal.crudapi.dto.MovimentacaoMaterialDTO;
+import com.personal.crudapi.dto.MovimentacaoMaterialRequestDTO;
 import com.personal.crudapi.entity.MovimentacaoMaterial;
 import com.personal.crudapi.service.MovimentacaoMaterialService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ public class MovimentacaoMaterialController {
     private MovimentacaoMaterialService service;
 
     @PostMapping
-    public ResponseEntity<MovimentacaoMaterial> criar(@RequestBody MovimentacaoMaterialDTO dto){
+    public ResponseEntity<MovimentacaoMaterial> criar(@RequestBody MovimentacaoMaterialRequestDTO dto){
         return ResponseEntity.ok(service.movimentaMaterial(dto));
     }
     @GetMapping

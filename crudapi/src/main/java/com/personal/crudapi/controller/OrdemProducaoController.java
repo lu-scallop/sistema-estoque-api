@@ -1,9 +1,8 @@
 package com.personal.crudapi.controller;
 
-import com.personal.crudapi.dto.OrdemProducaoDTO;
+import com.personal.crudapi.dto.OrdemProducaoRequestDTO;
 import com.personal.crudapi.entity.OrdemProducao;
 import com.personal.crudapi.service.OrdemProducaoService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +17,7 @@ public class OrdemProducaoController {
     private OrdemProducaoService service;
 
     @PostMapping
-    public ResponseEntity<OrdemProducao> criar(@RequestBody OrdemProducaoDTO dto){
+    public ResponseEntity<OrdemProducao> criar(@RequestBody OrdemProducaoRequestDTO dto){
         return ResponseEntity.ok(service.criaOrderDeProducao(dto));
     }
 

@@ -1,8 +1,11 @@
 package com.personal.crudapi.service;
 
 import com.personal.crudapi.dto.OrdemProducaoDTO;
+import com.personal.crudapi.dto.OrdemProducaoRequestDTO;
+import com.personal.crudapi.entity.Material;
 import com.personal.crudapi.entity.OrdemProducao;
 import com.personal.crudapi.enums.StatusOrdem;
+import com.personal.crudapi.repository.MaterialRepository;
 import com.personal.crudapi.repository.OrdemProducaoRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -16,13 +19,20 @@ public class OrdemProducaoService {
 
     @Autowired
     private OrdemProducaoRepository repository;
+    @Autowired
+    private MaterialRepository materialRepository;
 
     @Transactional
-    public OrdemProducao criaOrderDeProducao(OrdemProducaoDTO ordemProducaoDTO){
+    public OrdemProducao criaOrderDeProducao(OrdemProducaoRequestDTO dto){
         OrdemProducao op = new OrdemProducao();
-        op.setCodigoProducao(ordemProducaoDTO.getCodigoProducao());
-        op.setMaterial(ordemProducaoDTO.getMaterial());
-        op.setQuantidadePlanejada(ordemProducaoDTO.getQuantidadePlanejada());
+
+        Material material = materialRepository.findByCodigoMaterial(dto.getCodigoMaterial())
+                        .orElseThrow(() -> new IllegalArgumentException("Código do material não encontrado: " + dto.getCodigoMaterial()));
+
+
+        op.setCodigoProducao(dto.getCodigoProducao());
+        op.setMaterial(material);
+        op.setQuantidadePlanejada(dto.getQuantidadePlanejada());
         op.setQuantidadeConcluida(0L);
         op.setStatus(StatusOrdem.LIBERADA);
 

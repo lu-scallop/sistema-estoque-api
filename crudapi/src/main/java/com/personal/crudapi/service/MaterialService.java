@@ -1,6 +1,7 @@
 package com.personal.crudapi.service;
 
 import com.personal.crudapi.dto.MaterialDTO;
+import com.personal.crudapi.dto.MaterialRequestDTO;
 import com.personal.crudapi.entity.Material;
 import com.personal.crudapi.repository.MaterialRepository;
 import jakarta.transaction.Transactional;
@@ -17,12 +18,12 @@ public class MaterialService {
     private MaterialRepository repository;
 
     @Transactional
-    public Material adicionaOuAtualizaMaterial(MaterialDTO materialDTO){
-        Material material = repository.findByCodigoMaterial(materialDTO.getCodigoMaterial())
+    public Material adicionaOuAtualizaMaterial(MaterialRequestDTO dto){
+        Material material = repository.findByCodigoMaterial(dto.getCodigoMaterial())
                         .orElseGet(Material::new);
-        material.setCodigoMaterial(materialDTO.getCodigoMaterial());
-        material.setNome(materialDTO.getNome());
-        material.setTipo(materialDTO.getTipo());
+        material.setCodigoMaterial(dto.getCodigoMaterial());
+        material.setNome(dto.getNome());
+        material.setTipo(dto.getTipo());
 
         return repository.save(material);
     }

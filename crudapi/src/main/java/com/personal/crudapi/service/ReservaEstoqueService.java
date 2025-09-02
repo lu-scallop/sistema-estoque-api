@@ -1,12 +1,15 @@
 package com.personal.crudapi.service;
 
 import com.personal.crudapi.dto.ReservaEstoqueDTO;
+import com.personal.crudapi.dto.ReservaEstoqueRequestDTO;
 import com.personal.crudapi.entity.CentroCusto;
 import com.personal.crudapi.entity.Material;
 import com.personal.crudapi.entity.MovimentacaoMaterial;
 import com.personal.crudapi.entity.ReservaEstoque;
 import com.personal.crudapi.enums.StatusReserva;
 import com.personal.crudapi.enums.TipoMovimentacao;
+import com.personal.crudapi.repository.CentroCustoRepository;
+import com.personal.crudapi.repository.MaterialRepository;
 import com.personal.crudapi.repository.MovimentacaoMaterialRepository;
 import com.personal.crudapi.repository.ReservaEstoqueRepository;
 import jakarta.transaction.Transactional;
@@ -26,23 +29,35 @@ public class ReservaEstoqueService {
     private EstoqueCentroCustoService estoqueService;
     @Autowired
     private MovimentacaoMaterialRepository movimentacaoMaterialRepository;
+    @Autowired
+    private MaterialRepository materialRepository;
+    @Autowired
+    private CentroCustoRepository centroCustoRepository;
 
     @Transactional
-    public ReservaEstoque criaReserva(ReservaEstoqueDTO dto){
+    public ReservaEstoque criaReserva(ReservaEstoqueRequestDTO dto){
         ReservaEstoque reserva = new ReservaEstoque();
 
-        if (dto.getMaterial() == null)
+        Material material = materialRepository.findByCodigoMaterial(dto.getCodigoMaterial())
+                .orElseThrow(() -> new IllegalArgumentException("Código do material não encontrado: " + dto.getCodigoMaterial()));
+        CentroCusto centroCustoOrigem = centroCustoRepository.findByCodigoCentroCusto(dto.getCentroCustoOrigem())
+                .orElseThrow(() -> new IllegalArgumentException("Centro de Origem não encontrado: " + dto.getCentroCustoOrigem()));
+        CentroCusto centroCustoDestino = centroCustoRepository.findByCodigoCentroCusto(dto.getCentroCustoDestino())
+                .orElseThrow(() -> new IllegalArgumentException("Centro de Destino não encontrado: " + dto.getCentroCustoDestino()));
+
+
+        if (material == null)
             throw new IllegalArgumentException("Material não encontrado.");
-        if (dto.getCentroCustoOrigem() == null)
+        if (centroCustoOrigem == null)
             throw new IllegalArgumentException("Centro de origem não encontrado.");
         if (dto.getCentroCustoDestino() == null)
             throw new IllegalArgumentException("Centro de destino não encontrado.");
         if (dto.getCentroCustoOrigem().equals(dto.getCentroCustoDestino()))
             throw new IllegalArgumentException("Origem e Destino NÃO devem ser iguais.");
 
-        reserva.setMaterial(dto.getMaterial());
-        reserva.setCentroCustoOrigem(dto.getCentroCustoOrigem());
-        reserva.setCentroCustoDestino(dto.getCentroCustoDestino());
+        reserva.setMaterial(material);
+        reserva.setCentroCustoOrigem(centroCustoOrigem);
+        reserva.setCentroCustoDestino(centroCustoDestino);
         reserva.setQuantidadeSolicitada(dto.getQuantidade());
         reserva.setStatus(StatusReserva.ABERTA);
 

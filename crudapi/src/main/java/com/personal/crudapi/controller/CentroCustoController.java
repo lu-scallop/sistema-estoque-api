@@ -1,6 +1,7 @@
 package com.personal.crudapi.controller;
 
 import com.personal.crudapi.dto.CentroCustoDTO;
+import com.personal.crudapi.dto.CentroCustoRequestDTO;
 import com.personal.crudapi.entity.CentroCusto;
 import com.personal.crudapi.service.CentroCustoService;
 import jakarta.validation.Valid;
@@ -18,7 +19,7 @@ public class CentroCustoController {
     private CentroCustoService service;
 
     @PostMapping
-    public ResponseEntity<CentroCusto> criar(@Valid @RequestBody CentroCustoDTO dto){
+    public ResponseEntity<CentroCusto> criar(@Valid @RequestBody CentroCustoRequestDTO dto){
         CentroCusto salvo = service.adicionaCentroDeCusto(dto);
         URI location = URI.create("/centros-de-custo/"+salvo.getId());
         return ResponseEntity.created(location).body(salvo);
@@ -26,7 +27,7 @@ public class CentroCustoController {
 
     @PutMapping("/{id}")
     public ResponseEntity<CentroCusto> atualizar(@PathVariable Long id,
-                                                 @RequestBody CentroCustoDTO dto){
+                                                 @RequestBody CentroCustoRequestDTO dto){
         return ResponseEntity.ok(service.atualizaCentroDeCusto(id, dto));
     }
 

@@ -1,6 +1,7 @@
 package com.personal.crudapi.service;
 
 import com.personal.crudapi.dto.CentroCustoDTO;
+import com.personal.crudapi.dto.CentroCustoRequestDTO;
 import com.personal.crudapi.entity.CentroCusto;
 import com.personal.crudapi.repository.CentroCustoRepository;
 import jakarta.transaction.Transactional;
@@ -17,7 +18,7 @@ public class CentroCustoService {
     private CentroCustoRepository repository;
 
     @Transactional
-    public CentroCusto adicionaCentroDeCusto(CentroCustoDTO dto){
+    public CentroCusto adicionaCentroDeCusto(CentroCustoRequestDTO dto){
         if(repository.existsByCodigoCentroCusto(dto.getCodigoCentroCusto())){
             throw new IllegalArgumentException("Código já cadastrado: " + dto.getCodigoCentroCusto());
         }
@@ -28,7 +29,7 @@ public class CentroCustoService {
         return repository.save(centroCusto);
     }
     @Transactional
-    public CentroCusto atualizaCentroDeCusto(Long id, CentroCustoDTO dto){
+    public CentroCusto atualizaCentroDeCusto(Long id, CentroCustoRequestDTO dto){
         CentroCusto cc = repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Centro de Custo não encontrado: " + id));
 
