@@ -1,6 +1,5 @@
 package com.personal.crudapi.service;
 
-import com.personal.crudapi.dto.MaterialDTO;
 import com.personal.crudapi.dto.MaterialRequestDTO;
 import com.personal.crudapi.entity.Material;
 import com.personal.crudapi.repository.MaterialRepository;

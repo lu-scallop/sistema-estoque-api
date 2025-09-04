@@ -1,6 +1,5 @@
 package com.personal.crudapi.service;
 
-import com.personal.crudapi.dto.ReservaEstoqueDTO;
 import com.personal.crudapi.dto.ReservaEstoqueRequestDTO;
 import com.personal.crudapi.entity.CentroCusto;
 import com.personal.crudapi.entity.Material;
@@ -13,7 +12,6 @@ import com.personal.crudapi.repository.MaterialRepository;
 import com.personal.crudapi.repository.MovimentacaoMaterialRepository;
 import com.personal.crudapi.repository.ReservaEstoqueRepository;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -60,7 +58,6 @@ public class ReservaEstoqueService {
         reserva.setCentroCustoDestino(centroCustoDestino);
         reserva.setQuantidadeSolicitada(dto.getQuantidade());
         reserva.setStatus(StatusReserva.ABERTA);
-
         return repository.save(reserva);
 
     }

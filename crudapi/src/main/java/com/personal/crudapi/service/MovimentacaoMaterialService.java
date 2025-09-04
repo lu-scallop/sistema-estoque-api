@@ -1,6 +1,5 @@
 package com.personal.crudapi.service;
 
-import com.personal.crudapi.dto.MovimentacaoMaterialDTO;
 import com.personal.crudapi.dto.MovimentacaoMaterialRequestDTO;
 import com.personal.crudapi.entity.CentroCusto;
 import com.personal.crudapi.entity.Material;
@@ -8,7 +7,6 @@ import com.personal.crudapi.entity.MovimentacaoMaterial;
 import com.personal.crudapi.repository.CentroCustoRepository;
 import com.personal.crudapi.repository.MaterialRepository;
 import com.personal.crudapi.repository.MovimentacaoMaterialRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

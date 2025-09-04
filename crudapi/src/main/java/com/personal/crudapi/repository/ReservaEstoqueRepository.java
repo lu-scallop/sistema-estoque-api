@@ -13,5 +13,4 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ReservaEstoqueRepository extends JpaRepository<ReservaEstoque, Long> {
-    List<ReservaEstoque> findByStatus(StatusReserva status);
 }

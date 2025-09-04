@@ -27,6 +27,12 @@ public class OrdemProducaoController {
         return ResponseEntity.ok().build();
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable Long id){
+        service.deletarOrdemProducao(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping
     public List<OrdemProducao> listar(){ return service.listaTodasAsOrdens(); }
 }

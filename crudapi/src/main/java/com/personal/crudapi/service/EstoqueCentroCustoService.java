@@ -1,12 +1,10 @@
 package com.personal.crudapi.service;
 
-import com.personal.crudapi.dto.EstoqueCentroCustoDTO;
 import com.personal.crudapi.entity.CentroCusto;
 import com.personal.crudapi.entity.EstoqueCentroCusto;
 import com.personal.crudapi.entity.Material;
 import com.personal.crudapi.repository.EstoqueCentroCustoRepository;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

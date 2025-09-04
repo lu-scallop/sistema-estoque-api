@@ -11,6 +11,8 @@ public class OrdemProducaoRequestDTO {
     private String codigoProducao;
     @NotNull
     private String codigoMaterial;
+    @NotNull
+    private String codigoCentroCusto;
     @NotNull @Positive
     private Long quantidadePlanejada;
 }

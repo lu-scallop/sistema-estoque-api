@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.Instant;
+
 @Entity
 @Data
 public class OrdemProducao {
@@ -19,10 +21,16 @@ public class OrdemProducao {
     @ManyToOne
     private Material material;
 
+    @ManyToOne
+    private CentroCusto centroCusto;
+
     private Long quantidadeConcluida;
 
     private Long quantidadePlanejada;
 
     @Enumerated(EnumType.STRING)
     private StatusOrdem status;
+
+    private Instant dataAbertura;
+    private Instant dataFechamento;
 }

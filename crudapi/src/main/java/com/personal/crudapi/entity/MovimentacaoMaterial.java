@@ -3,8 +3,6 @@ package com.personal.crudapi.entity;
 import com.personal.crudapi.enums.TipoMovimentacao;
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.Date;
 
