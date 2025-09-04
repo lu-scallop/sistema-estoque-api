@@ -37,7 +37,7 @@ public class MovimentacaoMaterialService {
                         .orElseThrow(() -> new IllegalArgumentException("Material não encontrado: " + dto.getCodigoMaterial()));
         CentroCusto centroCustoOrigem = centroCustoRepository.findByCodigoCentroCusto(dto.getCodigoCentroOrigem())
                         .orElseThrow(() -> new IllegalArgumentException("Centro de Origem não encontrado: " + dto.getCodigoCentroOrigem()));
-        CentroCusto centroCustoDestino = centroCustoRepository.findByCodigoCentroCusto(dto.getCodigoCentroOrigem())
+        CentroCusto centroCustoDestino = centroCustoRepository.findByCodigoCentroCusto(dto.getCodigoCentroDestino())
                 .orElseThrow(() -> new IllegalArgumentException("Centro de Destino não encontrado: " + dto.getCodigoCentroDestino()));
 
 
