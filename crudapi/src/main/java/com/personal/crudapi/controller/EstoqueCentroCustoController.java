@@ -18,9 +18,7 @@ public class EstoqueCentroCustoController {
     private EstoqueCentroCustoService service;
 
     @GetMapping
-    public List<EstoqueCentroCusto> buscar(
-            @RequestParam(required = false) Long materialId,
-            @RequestParam(required = false) Long centroId){
-        return service.buscar(materialId, centroId);
+    public List<EstoqueCentroCusto> buscar(){
+        return service.buscar();
     }
 }

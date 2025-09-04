@@ -58,7 +58,7 @@ public class EstoqueCentroCustoService {
 
     }
 
-    public List<EstoqueCentroCusto> buscar(Long materialId, Long centroId){
+    public List<EstoqueCentroCusto> buscar(){
         return repository.findAll();
     }
 
