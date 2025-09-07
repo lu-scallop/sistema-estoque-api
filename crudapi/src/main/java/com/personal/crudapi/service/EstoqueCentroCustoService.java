@@ -14,12 +14,7 @@ import java.util.List;
 public class EstoqueCentroCustoService {
 
     @Autowired(required = true)
-    private final EstoqueCentroCustoRepository repository;
-
-    public EstoqueCentroCustoService(EstoqueCentroCustoRepository repository){
-        this.repository = repository;
-
-    }
+    private EstoqueCentroCustoRepository repository;
 
     @Transactional
     public EstoqueCentroCusto adicionaOuObtem(Material material, CentroCusto centroCusto){
@@ -35,10 +30,12 @@ public class EstoqueCentroCustoService {
 
     @Transactional
     public void creditaSaldo(Material material, CentroCusto centroCusto, long quantidade){
-        if(quantidade <= 0) throw new IllegalArgumentException("Quantidade inválida");
-        var e = adicionaOuObtem(material, centroCusto);
-        e.setSaldo(e.getSaldo() + quantidade);
-        repository.save(e);
+        if(quantidade <= 0)
+            throw new IllegalArgumentException("Quantidade inválida");
+
+        EstoqueCentroCusto estoque = adicionaOuObtem(material, centroCusto);
+        estoque.setSaldo(estoque.getSaldo() + quantidade);
+        repository.save(estoque);
     }
 
     @Transactional

@@ -1,12 +1,16 @@
 package com.personal.crudapi.service;
 
-import com.personal.crudapi.dto.MovimentacaoMaterialRequestDTO;
+import com.personal.crudapi.dto.EntradaMaterialRequestDTO;
+import com.personal.crudapi.dto.SaidaMaterialRequestDTO;
+import com.personal.crudapi.dto.TransfereMaterialRequestDTO;
 import com.personal.crudapi.entity.CentroCusto;
 import com.personal.crudapi.entity.Material;
 import com.personal.crudapi.entity.MovimentacaoMaterial;
+import com.personal.crudapi.enums.TipoMovimentacao;
 import com.personal.crudapi.repository.CentroCustoRepository;
 import com.personal.crudapi.repository.MaterialRepository;
 import com.personal.crudapi.repository.MovimentacaoMaterialRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,71 +28,90 @@ public class MovimentacaoMaterialService {
     @Autowired
     private CentroCustoRepository centroCustoRepository;
 
-    public MovimentacaoMaterial movimentaMaterial(MovimentacaoMaterialRequestDTO dto){
+    @Transactional
+    public MovimentacaoMaterial transfereMaterial(TransfereMaterialRequestDTO dto)
+    {
+        if (dto.getQuantidadeMovimentada() <= 0)
+            throw new IllegalArgumentException("Quantidade inválida.");
+
+        Material material = verificaMaterial(dto.getCodigoMaterial());
+        CentroCusto centroOrigem = verificaCentro(dto.getCodigoCentroOrigem());
+        CentroCusto centroDestino = verificaCentro(dto.getCodigoCentroDestino());
+
+        if (dto.getCodigoCentroOrigem().equals(dto.getCodigoCentroDestino()))
+            throw new IllegalArgumentException("O centro de origem e destino NÃO podem ser iguais.");
+
+        estoqueService.transfereSaldo(material, centroOrigem, centroDestino, dto.getQuantidadeMovimentada());
+
         MovimentacaoMaterial movimentacaoMaterial = new MovimentacaoMaterial();
-
-        if (dto.getQuantidadeMovimentada()<=0)
-            throw new IllegalArgumentException("Não há nada para movimentar.");
-        if (dto.getTipo() == null)
-            throw new IllegalArgumentException("Selecione o tipo de movimentação.");
-        if (dto.getCodigoMaterial() == null)
-            throw new IllegalArgumentException("O código do material é obrigatório.");
-        Material material = materialRepository.findByCodigoMaterial(dto.getCodigoMaterial())
-                        .orElseThrow(() -> new IllegalArgumentException("Material não encontrado: " + dto.getCodigoMaterial()));
-        CentroCusto centroCustoOrigem = centroCustoRepository.findByCodigoCentroCusto(dto.getCodigoCentroOrigem())
-                        .orElseThrow(() -> new IllegalArgumentException("Centro de Origem não encontrado: " + dto.getCodigoCentroOrigem()));
-        CentroCusto centroCustoDestino = centroCustoRepository.findByCodigoCentroCusto(dto.getCodigoCentroDestino())
-                .orElseThrow(() -> new IllegalArgumentException("Centro de Destino não encontrado: " + dto.getCodigoCentroDestino()));
-
-
         movimentacaoMaterial.setMaterial(material);
-        movimentacaoMaterial.setCentroOrigem(centroCustoOrigem);
-        movimentacaoMaterial.setCentroDestino(centroCustoDestino);
+        movimentacaoMaterial.setCentroOrigem(centroOrigem);
+        movimentacaoMaterial.setCentroDestino(centroDestino);
         movimentacaoMaterial.setQuantidadeMovimentada(dto.getQuantidadeMovimentada());
-        movimentacaoMaterial.setTipo(dto.getTipo());
-        movimentacaoMaterial.setData(new Date());
+        movimentacaoMaterial.setTipo(TipoMovimentacao.TRANSFERENCIA);
         movimentacaoMaterial.setObservacao(dto.getObservacao());
-
-
-        switch (dto.getTipo()){
-            case TRANSFERENCIA -> {
-                if(centroCustoOrigem == null)
-                    throw new IllegalArgumentException("Centro origem é obrigatório.");
-                if(centroCustoDestino == null)
-                    throw new IllegalArgumentException("Centro destino é obrigatório.");
-                if (centroCustoOrigem.equals(centroCustoDestino))
-                    throw new IllegalArgumentException("O centro de origem e destino NÃO podem ser iguais!");
-                estoqueService.transfereSaldo(
-                        material,
-                        centroCustoOrigem,
-                        centroCustoDestino,
-                        dto.getQuantidadeMovimentada()
-                );
-            }
-            case ENTRADA -> {
-                if (centroCustoDestino == null)
-                    throw new IllegalArgumentException("Centro destino é obrigatório.");
-                estoqueService.creditaSaldo(
-                        material,
-                        centroCustoDestino,
-                        dto.getQuantidadeMovimentada()
-                );
-
-            }
-            case SAIDA_CLIENTE, SAIDA -> {
-                if (centroCustoOrigem== null){
-                    throw new IllegalArgumentException("Centro origem é obrigatório.");
-                }
-                estoqueService.debitaSaldo(
-                        material,
-                        centroCustoOrigem,
-                        dto.getQuantidadeMovimentada()
-                );
-            }
-
-        }
+        movimentacaoMaterial.setData(new Date());
         return repository.save(movimentacaoMaterial);
+
     }
+
+    @Transactional
+    public MovimentacaoMaterial entraMaterial(EntradaMaterialRequestDTO dto)
+    {
+        if (dto.getQuantidadeMovimentada() <= 0)
+            throw new IllegalArgumentException("Quantidade inválida.");
+
+        Material material = verificaMaterial(dto.getCodigoMaterial());
+        CentroCusto centroDestino = verificaCentro(dto.getCodigoCentroDestino());
+
+        estoqueService.creditaSaldo(material, centroDestino, dto.getQuantidadeMovimentada());
+
+        MovimentacaoMaterial movimentacaoMaterial = new MovimentacaoMaterial();
+        movimentacaoMaterial.setMaterial(material);
+        movimentacaoMaterial.setCentroDestino(centroDestino);
+        movimentacaoMaterial.setQuantidadeMovimentada(dto.getQuantidadeMovimentada());
+        movimentacaoMaterial.setTipo(TipoMovimentacao.ENTRADA);
+        movimentacaoMaterial.setObservacao(dto.getObservacao());
+        movimentacaoMaterial.setData(new Date());
+        return repository.save(movimentacaoMaterial);
+
+    }
+
+    @Transactional
+    public MovimentacaoMaterial saiMaterial(SaidaMaterialRequestDTO dto)
+    {
+        if (dto.getQuantidadeMovimentada() <= 0)
+            throw new IllegalArgumentException("Quantidade inválida.");
+
+        Material material = verificaMaterial(dto.getCodigoMaterial());
+        CentroCusto centroOrigem = verificaCentro(dto.getCodigoCentroOrigem());
+
+        estoqueService.debitaSaldo(material, centroOrigem, dto.getQuantidadeMovimentada());
+
+        MovimentacaoMaterial movimentacaoMaterial = new MovimentacaoMaterial();
+        movimentacaoMaterial.setMaterial(material);
+        movimentacaoMaterial.setCentroOrigem(centroOrigem);
+        movimentacaoMaterial.setQuantidadeMovimentada(dto.getQuantidadeMovimentada());
+        movimentacaoMaterial.setTipo(TipoMovimentacao.SAIDA);
+        movimentacaoMaterial.setObservacao(dto.getObservacao());
+        movimentacaoMaterial.setData(new Date());
+        return repository.save(movimentacaoMaterial);
+
+
+    }
+
+
+    private Material verificaMaterial (String codigoMaterial){
+        return materialRepository.findByCodigoMaterial(codigoMaterial)
+                .orElseThrow(() -> new IllegalArgumentException("Material não encontrado: " + codigoMaterial));
+
+
+    }
+    private CentroCusto verificaCentro (String codigoCentroCusto){
+        return centroCustoRepository.findByCodigoCentroCusto(codigoCentroCusto)
+                .orElseThrow(() -> new IllegalArgumentException("Centro de Custo não encontrado: " + codigoCentroCusto));
+    }
+
 
     public List<MovimentacaoMaterial> listaTodasAsMovimentacoes() { return repository.findAll();}
 }

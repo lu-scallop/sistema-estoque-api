@@ -6,16 +6,12 @@ import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
 @Data
-public class MovimentacaoMaterialRequestDTO {
+public class SaidaMaterialRequestDTO {
     @NotNull
     private String codigoMaterial;
     @NotNull
     private String codigoCentroOrigem;
-    @NotNull
-    private String codigoCentroDestino;
     @NotNull @Positive
     private Long quantidadeMovimentada;
-    @NotNull
-    private TipoMovimentacao tipo;
     private String observacao;
 }
