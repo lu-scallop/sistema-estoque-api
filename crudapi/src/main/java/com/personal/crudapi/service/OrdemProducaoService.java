@@ -1,12 +1,8 @@
 package com.personal.crudapi.service;
 
 import com.personal.crudapi.dto.OrdemProducaoRequestDTO;
-import com.personal.crudapi.entity.CentroCusto;
-import com.personal.crudapi.entity.Material;
-import com.personal.crudapi.entity.MovimentacaoMaterial;
-import com.personal.crudapi.entity.OrdemProducao;
+import com.personal.crudapi.entity.*;
 import com.personal.crudapi.enums.StatusOrdem;
-import com.personal.crudapi.enums.TipoMovimentacao;
 import com.personal.crudapi.repository.CentroCustoRepository;
 import com.personal.crudapi.repository.MaterialRepository;
 import com.personal.crudapi.repository.MovimentacaoMaterialRepository;
@@ -66,23 +62,19 @@ public class OrdemProducaoService {
                     + op.getId());
         }
 
-        MovimentacaoMaterial movMaterial = new MovimentacaoMaterial();
+        EstoqueCentroCusto saldoDisponivelNoCentroDeCusto = estoqueCentroCustoService.adicionaOuObtem(op.getMaterial(), op.getCentroCusto());
+        Long saldoDisponivel = saldoDisponivelNoCentroDeCusto.getSaldo();
 
-        movMaterial.setMaterial(op.getMaterial());
-        movMaterial.setTipo(TipoMovimentacao.ENTRADA);
-        movMaterial.setCentroDestino(op.getCentroCusto());
-        movMaterial.setQuantidadeMovimentada(quantidadeParaApontar);
-        movMaterial.setObservacao("Apontamento OP: " + op.getCodigoProducao());
-
-        movRepository.save(movMaterial);
-        estoqueCentroCustoService.creditaSaldo(op.getMaterial(), op.getCentroCusto(), quantidadeParaApontar);
+        if (quantidadeParaApontar > saldoDisponivel)
+            throw new IllegalArgumentException("Não há saldo suficiente para essa operação.");
 
         long novaQuantidade = op.getQuantidadeConcluida() + quantidadeParaApontar;
 
         if (novaQuantidade > op.getQuantidadePlanejada())
-            throw new IllegalArgumentException("Não pode exceder a quantidade planejada");
+            throw new IllegalArgumentException("Não pode exceder a quantidade planejada.");
 
         op.setQuantidadeConcluida(novaQuantidade);
+        estoqueCentroCustoService.debitaSaldo(op.getMaterial(), op.getCentroCusto(), quantidadeParaApontar);
 
         if (novaQuantidade == op.getQuantidadePlanejada()){
             op.setStatus(StatusOrdem.CONCLUIDA);
