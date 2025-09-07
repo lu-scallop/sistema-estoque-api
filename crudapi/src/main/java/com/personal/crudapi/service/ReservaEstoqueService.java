@@ -63,7 +63,7 @@ public class ReservaEstoqueService {
     }
 
     @Transactional
-    public ReservaEstoque atendePedidoDeReserva(Long id, Long quantidadeParaAtender){
+    public void atendePedidoDeReserva(Long id, Long quantidadeParaAtender){
         if (quantidadeParaAtender == null || quantidadeParaAtender <= 0){
             throw new IllegalArgumentException("Quantidade para atender solicitação é inválida");
         }
@@ -94,15 +94,18 @@ public class ReservaEstoqueService {
         movMaterial.setObservacao("Atendimento da reserva: " + reserva.getId());
 
         movimentacaoMaterialRepository.save(movMaterial);
+        estoqueService.debitaSaldo(reserva.getMaterial(), reserva.getCentroCustoOrigem(), quantidadeParaAtender);
+        estoqueService.creditaSaldo(reserva.getMaterial(), reserva.getCentroCustoDestino(), quantidadeParaAtender);
 
         reserva.setQuantidadeAtendida(reserva.getQuantidadeAtendida() + quantidadeParaAtender);
+
         if (reserva.getQuantidadeAtendida().equals(reserva.getQuantidadeSolicitada()))
         {
             reserva.setStatus(StatusReserva.ATENDIDA);
             reserva.setDataAtendimento(new Date());
         }
 
-        return repository.save(reserva);
+        repository.save(reserva);
 
 
     }

@@ -26,12 +26,6 @@ public class ReservaEstoque {
 
     @Enumerated(EnumType.STRING)
     private StatusReserva status = StatusReserva.ABERTA;
-
-    /*
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date criadaEm = new Date();
-
-     */
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataAprovacao;
     @Temporal(TemporalType.TIMESTAMP)
