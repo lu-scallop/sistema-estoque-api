@@ -2,8 +2,6 @@ package com.personal.crudapi.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 @Entity
 @Data
