@@ -1,4 +1,4 @@
-package com.personal.crudapi.dto;
+package com.personal.crudapi.dto.responses;
 
 import lombok.Data;
 

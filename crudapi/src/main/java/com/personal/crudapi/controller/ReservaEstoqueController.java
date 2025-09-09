@@ -1,7 +1,6 @@
 package com.personal.crudapi.controller;
 
-import com.personal.crudapi.dto.ReservaEstoqueDTO;
-import com.personal.crudapi.dto.ReservaEstoqueRequestDTO;
+import com.personal.crudapi.dto.requests.ReservaEstoqueRequestDTO;
 import com.personal.crudapi.entity.ReservaEstoque;
 import com.personal.crudapi.service.ReservaEstoqueService;
 import org.springframework.beans.factory.annotation.Autowired;

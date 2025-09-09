@@ -1,6 +1,5 @@
-package com.personal.crudapi.dto;
+package com.personal.crudapi.dto.requests;
 
-import com.personal.crudapi.enums.TipoMovimentacao;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;

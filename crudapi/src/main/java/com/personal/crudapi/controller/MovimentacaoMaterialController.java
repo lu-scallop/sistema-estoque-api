@@ -1,8 +1,8 @@
 package com.personal.crudapi.controller;
 
-import com.personal.crudapi.dto.EntradaMaterialRequestDTO;
-import com.personal.crudapi.dto.SaidaMaterialRequestDTO;
-import com.personal.crudapi.dto.TransfereMaterialRequestDTO;
+import com.personal.crudapi.dto.requests.EntradaMaterialRequestDTO;
+import com.personal.crudapi.dto.requests.SaidaMaterialRequestDTO;
+import com.personal.crudapi.dto.requests.TransfereMaterialRequestDTO;
 import com.personal.crudapi.entity.MovimentacaoMaterial;
 import com.personal.crudapi.service.MovimentacaoMaterialService;
 import org.springframework.beans.factory.annotation.Autowired;

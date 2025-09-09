@@ -1,10 +1,9 @@
-package com.personal.crudapi.dto;
+package com.personal.crudapi.dto.responses;
 
 import com.personal.crudapi.enums.StatusReserva;
 import lombok.Data;
 
 import java.time.Instant;
-import java.util.Date;
 
 @Data
 public class ReservaEstoqueDTO {

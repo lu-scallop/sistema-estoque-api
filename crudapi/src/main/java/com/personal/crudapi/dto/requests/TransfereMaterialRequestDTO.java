@@ -1,16 +1,17 @@
-package com.personal.crudapi.dto;
+package com.personal.crudapi.dto.requests;
 
-import com.personal.crudapi.enums.TipoMovimentacao;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
 @Data
-public class SaidaMaterialRequestDTO {
+public class TransfereMaterialRequestDTO {
     @NotNull
     private String codigoMaterial;
     @NotNull
     private String codigoCentroOrigem;
+    @NotNull
+    private String codigoCentroDestino;
     @NotNull @Positive
     private Long quantidadeMovimentada;
     private String observacao;

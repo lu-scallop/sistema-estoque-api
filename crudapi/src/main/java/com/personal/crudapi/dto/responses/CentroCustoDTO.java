@@ -1,6 +1,5 @@
-package com.personal.crudapi.dto;
+package com.personal.crudapi.dto.responses;
 
-import com.personal.crudapi.entity.EstoqueCentroCusto;
 import lombok.Data;
 
 @Data

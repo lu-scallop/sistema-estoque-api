@@ -1,4 +1,4 @@
-package com.personal.crudapi.dto;
+package com.personal.crudapi.dto.responses;
 
 import com.personal.crudapi.entity.CentroCusto;
 import com.personal.crudapi.entity.Material;

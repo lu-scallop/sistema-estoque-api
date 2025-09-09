@@ -1,6 +1,6 @@
 package com.personal.crudapi.service;
 
-import com.personal.crudapi.dto.CentroCustoRequestDTO;
+import com.personal.crudapi.dto.requests.CentroCustoRequestDTO;
 import com.personal.crudapi.entity.CentroCusto;
 import com.personal.crudapi.repository.CentroCustoRepository;
 import jakarta.transaction.Transactional;

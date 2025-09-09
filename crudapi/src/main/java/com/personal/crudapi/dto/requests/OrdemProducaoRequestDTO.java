@@ -1,4 +1,4 @@
-package com.personal.crudapi.dto;
+package com.personal.crudapi.dto.requests;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

@@ -1,6 +1,6 @@
 package com.personal.crudapi.controller;
 
-import com.personal.crudapi.dto.OrdemProducaoRequestDTO;
+import com.personal.crudapi.dto.requests.OrdemProducaoRequestDTO;
 import com.personal.crudapi.entity.OrdemProducao;
 import com.personal.crudapi.service.OrdemProducaoService;
 import org.springframework.beans.factory.annotation.Autowired;

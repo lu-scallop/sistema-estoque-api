@@ -1,6 +1,6 @@
 package com.personal.crudapi.service;
 
-import com.personal.crudapi.dto.ReservaEstoqueRequestDTO;
+import com.personal.crudapi.dto.requests.ReservaEstoqueRequestDTO;
 import com.personal.crudapi.entity.CentroCusto;
 import com.personal.crudapi.entity.Material;
 import com.personal.crudapi.entity.MovimentacaoMaterial;

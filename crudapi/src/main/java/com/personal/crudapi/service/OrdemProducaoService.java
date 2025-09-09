@@ -1,6 +1,6 @@
 package com.personal.crudapi.service;
 
-import com.personal.crudapi.dto.OrdemProducaoRequestDTO;
+import com.personal.crudapi.dto.requests.OrdemProducaoRequestDTO;
 import com.personal.crudapi.entity.*;
 import com.personal.crudapi.enums.StatusOrdem;
 import com.personal.crudapi.repository.CentroCustoRepository;

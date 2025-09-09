@@ -1,7 +1,6 @@
 package com.personal.crudapi.controller;
 
-import com.personal.crudapi.dto.CentroCustoDTO;
-import com.personal.crudapi.dto.CentroCustoRequestDTO;
+import com.personal.crudapi.dto.requests.CentroCustoRequestDTO;
 import com.personal.crudapi.entity.CentroCusto;
 import com.personal.crudapi.service.CentroCustoService;
 import jakarta.validation.Valid;
