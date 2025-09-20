@@ -27,6 +27,11 @@ public class MaterialController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/{codigo}")
+    public Material buscar(String codigo){
+        return service.buscaPorCodigo(codigo);
+    }
+
     @GetMapping
     public List<Material> listar(){ return service.listaTodosOsMateriais(); }
 }
