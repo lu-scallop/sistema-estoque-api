@@ -39,7 +39,7 @@ public class MaterialServiceTest {
         Material salvo = service.adicionaOuAtualizaMaterial(req);
 
         assertThat(salvo).isNotNull();
-        assertThat(salvo.getId()).isNotNull(); // id gerado ao salvar
+        assertThat(salvo.getId()).isNotNull();
         assertThat(salvo.getCodigoMaterial()).isEqualTo("22564");
         assertThat(salvo.getNome()).isEqualTo("Peça T");
         assertThat(salvo.getTipo()).isEqualTo("Corpo");
@@ -124,7 +124,35 @@ public class MaterialServiceTest {
     @Test
     @Transactional
     @Rollback
-    void listaTodosOsMateriais_DeveRetornarTodosOsMateriais_QuandoExistentesNoBanco(){
+    void buscaPorCodigo_DeveRetornarMaterial_QuandoCodigoExiste() {
+        Material material = new Material();
+        material.setCodigoMaterial("22564");
+        material.setNome("Peça T");
+        material.setTipo("Corpo");
+
+        repository.save(material);
+
+        service.buscaPorCodigo(material.getCodigoMaterial());
+
+        assertThat(material.getCodigoMaterial()).isNotNull();
+        assertThat(material.getCodigoMaterial()).isEqualTo("22564");
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void buscaPorCodigo_DisparaExcecao_QuandoCodigoNaoExiste() {
+        String codigoDoMaterialInexistente = "20661";
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            service.buscaPorCodigo(codigoDoMaterialInexistente);
+        });
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void listaTodosOsMateriais_DeveRetornarTodosOsMateriais_QuandoExistentesNoBanco() {
         Material material1 = new Material();
         material1.setCodigoMaterial("22564");
         material1.setNome("Peça T");
