@@ -18,6 +18,6 @@ public class EstoqueCentroCustoController {
 
     @GetMapping
     public List<EstoqueCentroCusto> buscar(){
-        return service.buscar();
+        return service.listaTodosOsEstoques();
     }
 }

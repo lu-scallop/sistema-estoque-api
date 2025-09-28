@@ -55,7 +55,7 @@ public class EstoqueCentroCustoService {
 
     }
 
-    public List<EstoqueCentroCusto> buscar(){
+    public List<EstoqueCentroCusto> listaTodosOsEstoques(){
         return repository.findAll();
     }
 
