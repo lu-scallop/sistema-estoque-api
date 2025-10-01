@@ -1,5 +1,7 @@
 package com.personal.crudapi.service;
 
+import com.personal.crudapi.dto.requests.EntradaMaterialRequestDTO;
+import com.personal.crudapi.dto.requests.SaidaMaterialRequestDTO;
 import com.personal.crudapi.dto.requests.TransfereMaterialRequestDTO;
 import com.personal.crudapi.entity.CentroCusto;
 import com.personal.crudapi.entity.EstoqueCentroCusto;
@@ -151,4 +153,197 @@ public class MovimentacaoMaterialServiceTest {
             service.transfereMaterial(dto);
         });
     }
+
+    @Test
+    @Transactional
+    @Rollback
+    void entraMaterial_DeveAdicionarQuantidadeNoCentroCusto_QuandoCentroExistir(){
+        Material material = new Material();
+        material.setCodigoMaterial("22564");
+        material.setNome("Peça T");
+        material.setTipo("Corpo");
+
+        CentroCusto centroCusto = new CentroCusto();
+        centroCusto.setCodigoCentroCusto("cc1");
+        centroCusto.setNome("Montagem");
+
+        EstoqueCentroCusto estoqueOrigem = new EstoqueCentroCusto();
+        estoqueOrigem.setCentroCusto(centroCusto);
+        estoqueOrigem.setMaterial(material);
+        estoqueOrigem.setSaldo(50L);
+
+        materialRepository.save(material);
+        centroCustoRepository.save(centroCusto);
+        estoqueRepository.save(estoqueOrigem);
+
+        EntradaMaterialRequestDTO dto = new EntradaMaterialRequestDTO();
+        dto.setCodigoMaterial(material.getCodigoMaterial());
+        dto.setCodigoCentroDestino(centroCusto.getCodigoCentroCusto());
+        dto.setQuantidadeMovimentada(30L);
+
+        MovimentacaoMaterial movimentacao = service.entraMaterial(dto);
+
+        assertThat(movimentacao).isNotNull();
+        assertThat(movimentacao.getMaterial().getCodigoMaterial()).isEqualTo("22564");
+        assertThat(movimentacao.getCentroDestino().getCodigoCentroCusto()).isEqualTo("cc1");
+        assertThat(movimentacao.getQuantidadeMovimentada()).isEqualTo(30L);
+        assertThat(movimentacao.getTipo()).isEqualTo(TipoMovimentacao.ENTRADA);
+
+        Optional<EstoqueCentroCusto> estoqueDestinoAtualizado = estoqueRepository.findByMaterialAndCentroCusto(material, centroCusto);
+
+        assertThat(estoqueDestinoAtualizado.get().getSaldo()).isEqualTo(80L);
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void entraMaterial_DeveDispararExcecao_QuandoQuantidadeInvalida(){
+        Material material = new Material();
+        material.setCodigoMaterial("22564");
+        material.setNome("Peça T");
+        material.setTipo("Corpo");
+
+        CentroCusto centroCustoDestino = new CentroCusto();
+        centroCustoDestino.setCodigoCentroCusto("cc2");
+        centroCustoDestino.setNome("Montagem");
+
+        materialRepository.save(material);
+        centroCustoRepository.save(centroCustoDestino);
+
+        EntradaMaterialRequestDTO dto = new EntradaMaterialRequestDTO();
+        dto.setCodigoMaterial(material.getCodigoMaterial());
+        dto.setCodigoCentroDestino(centroCustoDestino.getCodigoCentroCusto());
+        dto.setQuantidadeMovimentada(0L);
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            service.entraMaterial(dto);
+        });
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void entraMaterial_DeveDispararExcecao_QuandoQuantidadeNegativa(){
+        Material material = new Material();
+        material.setCodigoMaterial("22564");
+        material.setNome("Peça T");
+        material.setTipo("Corpo");
+
+        CentroCusto centroCustoDestino = new CentroCusto();
+        centroCustoDestino.setCodigoCentroCusto("cc2");
+        centroCustoDestino.setNome("Montagem");
+
+        materialRepository.save(material);
+        centroCustoRepository.save(centroCustoDestino);
+
+        EntradaMaterialRequestDTO dto = new EntradaMaterialRequestDTO();
+        dto.setCodigoMaterial(material.getCodigoMaterial());
+        dto.setCodigoCentroDestino(centroCustoDestino.getCodigoCentroCusto());
+        dto.setQuantidadeMovimentada(-20L);
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            service.entraMaterial(dto);
+        });
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void saiMaterial_DeveSairMaterial_QuandoSaidaValida(){
+        Material material = new Material();
+        material.setCodigoMaterial("22564");
+        material.setNome("Peça T");
+        material.setTipo("Corpo");
+
+        CentroCusto centroCusto = new CentroCusto();
+        centroCusto.setCodigoCentroCusto("cc1");
+        centroCusto.setNome("Montagem");
+
+        materialRepository.save(material);
+        centroCustoRepository.save(centroCusto);
+
+        EstoqueCentroCusto estoque = new EstoqueCentroCusto();
+        estoque.setCentroCusto(centroCusto);
+        estoque.setMaterial(material);
+        estoque.setSaldo(100L);
+
+        estoqueRepository.save(estoque);
+
+        SaidaMaterialRequestDTO dto = new SaidaMaterialRequestDTO();
+        dto.setCodigoMaterial(material.getCodigoMaterial());
+        dto.setCodigoCentroOrigem(centroCusto.getCodigoCentroCusto());
+        dto.setQuantidadeMovimentada(30L);
+
+        MovimentacaoMaterial movimentacao = service.saiMaterial(dto);
+
+        assertThat(movimentacao).isNotNull();
+        assertThat(movimentacao.getMaterial().getCodigoMaterial()).isEqualTo("22564");
+        assertThat(movimentacao.getCentroOrigem().getCodigoCentroCusto()).isEqualTo("cc1");
+        assertThat(movimentacao.getQuantidadeMovimentada()).isEqualTo(30L);
+        assertThat(movimentacao.getTipo()).isEqualTo(TipoMovimentacao.SAIDA);
+
+        Optional<EstoqueCentroCusto> estoqueAtualizado = estoqueRepository.findByMaterialAndCentroCusto(material, centroCusto);
+        assertThat(estoqueAtualizado.get().getSaldo()).isEqualTo(70L);
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void saiMaterial_DeveDispararExcecao_QuandoQuantidadeInvalida(){
+        Material material = new Material();
+        material.setCodigoMaterial("22564");
+        material.setNome("Peça T");
+        material.setTipo("Corpo");
+
+        CentroCusto centroCusto = new CentroCusto();
+        centroCusto.setCodigoCentroCusto("cc1");
+        centroCusto.setNome("Montagem");
+
+        materialRepository.save(material);
+        centroCustoRepository.save(centroCusto);
+
+        SaidaMaterialRequestDTO dto = new SaidaMaterialRequestDTO();
+        dto.setCodigoMaterial(material.getCodigoMaterial());
+        dto.setCodigoCentroOrigem(centroCusto.getCodigoCentroCusto());
+        dto.setQuantidadeMovimentada(-10L);
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            service.saiMaterial(dto);
+        });
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void saiMaterial_DeveDispararExcecao_QuandoSaldoInsuficiente(){
+        Material material = new Material();
+        material.setCodigoMaterial("22564");
+        material.setNome("Peça T");
+        material.setTipo("Corpo");
+
+        CentroCusto centroCusto = new CentroCusto();
+        centroCusto.setCodigoCentroCusto("cc1");
+        centroCusto.setNome("Montagem");
+
+        materialRepository.save(material);
+        centroCustoRepository.save(centroCusto);
+
+        EstoqueCentroCusto estoque = new EstoqueCentroCusto();
+        estoque.setCentroCusto(centroCusto);
+        estoque.setMaterial(material);
+        estoque.setSaldo(20L);
+
+        estoqueRepository.save(estoque);
+
+        SaidaMaterialRequestDTO dto = new SaidaMaterialRequestDTO();
+        dto.setCodigoMaterial(material.getCodigoMaterial());
+        dto.setCodigoCentroOrigem(centroCusto.getCodigoCentroCusto());
+        dto.setQuantidadeMovimentada(50L);
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            service.saiMaterial(dto);
+        });
+    }
+
+
 }
